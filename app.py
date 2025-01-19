@@ -78,12 +78,16 @@ age = input_with_example(
     help_text="Contoh: >50 untuk kemungkinan diabetes, <30 untuk non-diabetes"
 )
 
+# Placeholder for unused features
+# Jika model Anda dilatih dengan lebih banyak fitur, tambahkan nilai default untuk fitur yang hilang
+unused_features = [0.0, 0.0, 0.0]  # Sesuaikan jumlah sesuai dengan kebutuhan
+
 # Prediksi
 if st.button("Predict Diabetes"):
     # Normalisasi input data
     try:
         input_data = scaler.transform([
-            [pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]
+            [pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age] + unused_features
         ])
         prediction = model.predict(input_data)
         result = "Diabetes" if prediction[0] == 1 else "Non-Diabetes"
