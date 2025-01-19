@@ -15,15 +15,58 @@ def predict_diabetes(model, input_data):
 # Judul aplikasi
 st.title("Diabetes Prediction")
 
-# Input untuk fitur
-pregnancies = st.number_input("Enter the Pregnancies value", min_value=0.0, step=1.0)
-glucose = st.number_input("Enter the Glucose value", min_value=0.0, step=1.0)
-blood_pressure = st.number_input("Enter the Blood Pressure value", min_value=0.0, step=1.0)
-skin_thickness = st.number_input("Enter the Skin Thickness value", min_value=0.0, step=1.0)
-insulin = st.number_input("Enter the Insulin value", min_value=0.0, step=1.0)
-bmi = st.number_input("Enter the BMI value", min_value=0.0, step=0.1)
-diabetes_pedigree_function = st.number_input("Enter the Diabetes Pedigree Function value", min_value=0.0, step=0.01)
-age = st.number_input("Enter the Age value", min_value=0.0, step=1.0)
+st.markdown("**Masukkan nilai untuk masing-masing fitur.**")
+st.markdown("Contoh nilai: **Nilai tinggi (positif diabetes)** dan **nilai rendah (non-diabetes)** diberikan untuk panduan.")
+
+# Input untuk fitur dengan placeholder
+pregnancies = st.number_input(
+    "Enter the Pregnancies value (e.g., 6+ for diabetes, 0-2 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
+glucose = st.number_input(
+    "Enter the Glucose value (e.g., > 140 for diabetes, < 100 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
+blood_pressure = st.number_input(
+    "Enter the Blood Pressure value (e.g., > 90 for diabetes, < 80 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
+skin_thickness = st.number_input(
+    "Enter the Skin Thickness value (e.g., > 30 for diabetes, < 20 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
+insulin = st.number_input(
+    "Enter the Insulin value (e.g., > 200 for diabetes, < 100 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
+bmi = st.number_input(
+    "Enter the BMI value (e.g., > 30 for diabetes, 18-25 for non-diabetes)", 
+    min_value=0.0, 
+    step=0.1,
+    value=0.0
+)
+diabetes_pedigree_function = st.number_input(
+    "Enter the Diabetes Pedigree Function value (e.g., > 0.8 for diabetes, < 0.5 for non-diabetes)", 
+    min_value=0.0, 
+    step=0.01,
+    value=0.0
+)
+age = st.number_input(
+    "Enter the Age value (e.g., > 50 for diabetes, < 30 for non-diabetes)", 
+    min_value=0.0, 
+    step=1.0,
+    value=0.0
+)
 
 # Tombol prediksi
 if st.button("Diabetes Prediction Test"):
