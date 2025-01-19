@@ -1,8 +1,8 @@
 # Deteksi Dini Diabetes dengan Machine Learning: Penerapan Logistic Regression, Decision Tree, Random Forest, dan XGBoost melalui Analisis Data, Teknik SMOTE, dan Evaluasi Model
 
-Nama : feby akliji rofiah
-Nim : A11.2022.14529
-Kelas : A11.64502
+Nama : feby akliji rofiah  
+Nim : A11.2022.14529  
+Kelas : A11.64502  
 
 ## Domain Proyek
 
