@@ -4,6 +4,8 @@ Nama : feby akliji rofiah
 Nim : A11.2022.14529  
 Kelas : A11.64502  
 
+model telah di deploy di : [Streamlit](https://stki-a11202214529-uas.streamlit.app/)
+
 ## Domain Proyek
 
 Menurut laporan dari _World Health Organization (WHO)_ pada tahun 2019, Diabetes merupakan penyakit ke-9 paling mematikan di dunia [1]. Menurut laporan dari _International Diabetes Federation (IDF)_ tahun 2021, ada 536.6 juta orang diseluruh dunia menderita diabetes, dengan kematian sebanyak 6.7 juta orang. Di Indonesia sendiri ada 19.5 juta orang menderita diabetes dengan kematian sebanyak 236.7 ribu orang [2].
