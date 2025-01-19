@@ -1,142 +1,67 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-# User-defined Functions
-def val_count(data: pd.Series, orderby: str = 'Count', ascending: bool = False) -> pd.DataFrame:
-    if type(data) == pd.Series:
-        result = data.value_counts(dropna=False).reset_index()
-        result.columns = ['Values', 'Count']
-        result['%'] = np.around(result['Count'] * 100 / len(data), 3)
-        return result.sort_values(by=orderby, ascending=ascending)
-    else:
-        return 'Input Series only'
+# Fungsi prediksi
+def predict_diabetes(model, input_data):
+    prediction = model.predict(input_data)
+    return "Diabetes" if prediction[0] == 1 else "Non-Diabetes"
 
-def numerical_summary(data: pd.Series, n: int = 3) -> pd.Series:
-    mean = np.mean(data)
-    median = np.median(data)
-    std = np.std(data)
-    min_value = np.min(data)
-    max_value = np.max(data)
-    range_value = np.abs(max_value - min_value)
-    skewness = data.skew()
-    kurtosis = data.kurtosis()
-    result = pd.Series([min_value, max_value, range_value, mean, median, std, skewness, kurtosis])
-    result.index = ['min', 'max', 'range', 'mean', 'median', 'std', 'skewness', 'kurtosis']
-    return np.around(result, n)
+# Judul aplikasi
+st.title("Diabetes Prediction")
 
-# Streamlit App
-st.title("Diabetes Prediction Dashboard")
+# Input untuk fitur
+pregnancies = st.number_input("Enter the Pregnancies value", min_value=0.0, step=1.0)
+glucose = st.number_input("Enter the Glucose value", min_value=0.0, step=1.0)
+blood_pressure = st.number_input("Enter the Blood Pressure value", min_value=0.0, step=1.0)
+skin_thickness = st.number_input("Enter the Skin Thickness value", min_value=0.0, step=1.0)
+insulin = st.number_input("Enter the Insulin value", min_value=0.0, step=1.0)
+bmi = st.number_input("Enter the BMI value", min_value=0.0, step=0.1)
+diabetes_pedigree_function = st.number_input("Enter the Diabetes Pedigree Function value", min_value=0.0, step=0.01)
+age = st.number_input("Enter the Age value", min_value=0.0, step=1.0)
 
-# Upload Dataset
-uploaded_file = st.file_uploader("Upload Dataset (CSV)", type="csv")
-if uploaded_file:
-    data = pd.read_csv(uploaded_file)
-    st.write("### Dataset Overview")
-    st.dataframe(data)
+# Tombol prediksi
+if st.button("Diabetes Prediction Test"):
+    # Dataset dummy untuk pelatihan model
+    df = pd.DataFrame({
+        'Pregnancies': np.random.randint(0, 10, size=100),
+        'Glucose': np.random.uniform(50, 200, size=100),
+        'BloodPressure': np.random.uniform(50, 150, size=100),
+        'SkinThickness': np.random.uniform(10, 50, size=100),
+        'Insulin': np.random.uniform(15, 276, size=100),
+        'BMI': np.random.uniform(18, 50, size=100),
+        'DiabetesPedigreeFunction': np.random.uniform(0.1, 2.5, size=100),
+        'Age': np.random.randint(20, 80, size=100),
+        'Outcome': np.random.choice([0, 1], size=100)
+    })
 
-    # Data Cleaning
-    st.write("### Data Cleaning")
-    st.write("#### Removing Unnecessary Data")
-    st.write(f"Columns Before ({len(data.columns)}):", data.columns.tolist())
-    data.drop(['ID', 'No_Pation'], axis=1, inplace=True)
-    st.write(f"Columns After ({len(data.columns)}):", data.columns.tolist())
+    # Pisahkan fitur dan target
+    X = df.drop('Outcome', axis=1)
+    y = df['Outcome']
 
-    st.write("#### Correcting Data Entry Errors")
-    data['Gender'] = data['Gender'].replace({'f': 'F'})
-    data['CLASS'] = data['CLASS'].replace({'N ': 'N', 'P': 'Y', 'Y ': 'Y'})
-    st.write(data.select_dtypes('object').nunique())
-
-    # Handling Missing Values
-    st.write("### Handling Missing Values")
-    st.write(data.isna().sum())
-
-    # Dealing with Duplicates
-    st.write("### Removing Duplicate Records")
-    before = len(data)
-    data = data.drop_duplicates().reset_index(drop=True)
-    after = len(data)
-    st.write(f"Records Before: {before}, Records After: {after}")
-
-    # Data Transformation
-    st.write("### Data Transformation")
-    st.write("#### Encode Gender and CLASS")
-    data['Gender'].replace({'F': 0, 'M': 1}, inplace=True)
-    data['CLASS'].replace({'N': 0, 'Y': 1}, inplace=True)
-    st.write(data.head())
-
-    # Data Exploration
-    st.write("### Data Exploration")
-    st.write("#### Correlation Heatmap")
-    plt.figure(figsize=(11, 8))
-    sns.heatmap(data.corr(method='spearman'), annot=True, cmap='Blues')
-    st.pyplot(plt)
-
-    st.write("#### Univariate Analysis (AGE)")
-    sns.histplot(data['AGE'], kde=True, color='dodgerblue')
-    plt.title('AGE Distribution')
-    st.pyplot(plt)
-
-    # Feature Engineering
-    st.write("### Feature Engineering")
-    norm_col = ['AGE', 'Urea', 'Cr', 'HbA1c', 'Chol', 'TG', 'HDL', 'LDL', 'VLDL', 'BMI']
+    # Normalisasi data
     scaler = MinMaxScaler()
-    data_scaled = scaler.fit_transform(data[norm_col])
-    data_scaled = pd.DataFrame(data_scaled, columns=norm_col)
-    data = pd.concat([data_scaled, data[['Gender', 'CLASS']]], axis=1)
-    st.write("Normalized Data")
-    st.dataframe(data)
+    X_scaled = scaler.fit_transform(X)
 
-    # Train-Test Split
-    st.write("### Train-Test Split")
-    X = data.drop('CLASS', axis=1)
-    y = data['CLASS']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
-    st.write(f"Training Data: {len(X_train)}, Testing Data: {len(X_test)}")
+    # Train-test split
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-    # Resampling Data
-    st.write("### Resampling Data with SMOTE")
-    smote = SMOTE(sampling_strategy=0.5, random_state=42)
-    X_SMOTE, y_SMOTE = smote.fit_resample(X_train, y_train)
-    st.write("After SMOTE:")
-    st.write(val_count(pd.Series(y_SMOTE)))
+    # SMOTE untuk data imbalance
+    smote = SMOTE(random_state=42)
+    X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-    # Modeling
-    st.write("### Model Training and Evaluation")
-    resample = [
-        ('Original', X_train, y_train),
-        ('SMOTE', X_SMOTE, y_SMOTE)
-    ]
-    models = [
-        ('Logistic Regression', LogisticRegression(random_state=42)),
-        ('Decision Tree', DecisionTreeClassifier(random_state=42)),
-        ('Random Forest', RandomForestClassifier(random_state=42)),
-        ('XGBoost', XGBClassifier(random_state=42))
-    ]
+    # Model Random Forest
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train_smote, y_train_smote)
 
-    results = []
-    for r_name, X_res, y_res in resample:
-        for m_name, model in models:
-            model.fit(X_res, y_res)
-            y_pred = model.predict(X_test)
-            accuracy = accuracy_score(y_test, y_pred)
-            precision = precision_score(y_test, y_pred)
-            recall = recall_score(y_test, y_pred)
-            f1 = f1_score(y_test, y_pred)
-            results.append((r_name + ' - ' + m_name, accuracy, precision, recall, f1))
+    # Input data untuk prediksi
+    input_data = scaler.transform([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
-    comparison = pd.DataFrame(results, columns=['Model', 'Accuracy', 'Precision', 'Recall', 'F1 Score'])
-    st.write("Model Evaluation")
-    st.dataframe(comparison.sort_values(by='F1 Score', ascending=False))
-
+    # Prediksi hasil
+    result = predict_diabetes(model, input_data)
+    st.success(f"The prediction result is: {result}")
