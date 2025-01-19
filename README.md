@@ -2,9 +2,6 @@
 
 ## Domain Proyek
 
-![Illustration](assets/ilustrasi.png)
-*Image Credit: Harvard Health*
-
 Menurut laporan dari *World Health Organization (WHO)* pada tahun 2019, Diabetes merupakan penyakit ke-9 paling mematikan di dunia [1]. Menurut laporan dari *International Diabetes Federation (IDF)* tahun 2021, ada 536.6 juta orang diseluruh dunia menderita diabetes, dengan kematian sebanyak 6.7 juta orang. Di Indonesia sendiri ada 19.5 juta orang menderita diabetes dengan kematian sebanyak 236.7 ribu orang [2].
 
 Diabetes, disebut juga sebagai penyakit gula atau kencing manis, merupakan penyakit atau kelainan yang mempengaruhi kemampuan tubuh untuk mengubah makanan menjadi energi yang disebabkan karena kekurangan hormon insulin yang berfungsi membantu tubuh mendapatkan energi dari makan. Jika dibiarkan, penyakit ini bisa menimbulkan komplikasi yang secara perlahan dapat menyerang organ penting di tubuh manusia seperti mata (kebutaan), otak (stroke), hingga gagal jantung dan gagal ginjal. Sayangnya, banyak penderita diabetes yang baru menyadari penyakitnya ketika sudah terjadi komplikasi [3].
